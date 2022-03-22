@@ -47,10 +47,19 @@ export type ToastFunction<T> = (
   options?: ToastProps
 ) => ToastKey;
 
+export type Toast = {
+  success: ToastFunction<"success">;
+  error: ToastFunction<"error">;
+  info: ToastFunction<"info">;
+  warning: ToastFunction<"warning">;
+  default: ToastFunction<"default">;
+  close: (key: ToastKey) => void;
+};
+
 export const useToast = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const toast = useMemo(() => {
+  const toast: Toast = useMemo(() => {
     const createToastFn =
       <T extends ToastVariant>(variant: T): ToastFunction<T> =>
       (message: string, options?: ToastProps) =>
@@ -62,9 +71,19 @@ export const useToast = () => {
       info: createToastFn("info"),
       warning: createToastFn("warning"),
       default: createToastFn("default"),
-      close: (key: ToastKey) => closeSnackbar(key),
+      close: (key) => closeSnackbar(key),
     };
   }, [enqueueSnackbar, closeSnackbar]);
 
   return toast;
 };
+
+export type withToastProps = { toast: Toast };
+
+export const withToast =
+  <P extends object>(Component: React.ComponentType<P>) =>
+  (props: P) => {
+    const toast = useToast();
+
+    return <Component {...props} toast={toast} />;
+  };
