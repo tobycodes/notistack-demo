@@ -42,28 +42,30 @@ export type ToastKey = SnackbarKey;
 export type ToastVariant = OptionsObject["variant"];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type ToastFunction<T> = (
+export type ToastFunction<T extends ToastVariant> = (
   message: string,
   options?: ToastProps
 ) => ToastKey;
 
-export type Toast = {
+export interface Toast {
   success: ToastFunction<"success">;
   error: ToastFunction<"error">;
   info: ToastFunction<"info">;
   warning: ToastFunction<"warning">;
   default: ToastFunction<"default">;
   close: (key: ToastKey) => void;
-};
+}
 
 export const useToast = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const toast: Toast = useMemo(() => {
-    const createToastFn =
-      <T extends ToastVariant>(variant: T): ToastFunction<T> =>
-      (message: string, options?: ToastProps) =>
+    function createToastFn<T extends ToastVariant>(
+      variant: T
+    ): ToastFunction<T> {
+      return (message: string, options?: ToastProps) =>
         enqueueSnackbar(message, { variant, ...options });
+    }
 
     return {
       success: createToastFn("success"),
