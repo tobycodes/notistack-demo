@@ -1,8 +1,12 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Button, Grid } from "@mui/material";
+
+import { useToast } from "./lib/toast";
+import logo from "./logo.svg";
+import "./App.css";
 
 function App() {
+  const toast = useToast();
+
   return (
     <div className="App">
       <header className="App-header">
@@ -18,6 +22,43 @@ function App() {
         >
           Learn React
         </a>
+        <Grid marginTop={3} display="flex" columnGap={2}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => toast.success("Success toast")}
+          >
+            Toast success
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => toast.error("Error toast")}
+          >
+            Toast error
+          </Button>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={() => toast.warning("Warning toast")}
+          >
+            Toast warning
+          </Button>
+          <Button
+            variant="contained"
+            color="info"
+            onClick={() => toast.info("Info toast")}
+          >
+            Toast info
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => toast.default("Default toast")}
+          >
+            Toast default
+          </Button>
+        </Grid>
       </header>
     </div>
   );
