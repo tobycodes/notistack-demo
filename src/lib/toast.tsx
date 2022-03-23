@@ -5,12 +5,12 @@ import { CancelRounded } from "@mui/icons-material";
 import type { SnackbarProviderProps, OptionsObject } from "notistack";
 import type { TransitionProps } from "@mui/material/transitions";
 
-export type ToastConfigProps = Omit<SnackbarProviderProps, "children">;
+export type ToastConfig = Omit<SnackbarProviderProps, "children">;
 
 export const ToastProvider = (props: SnackbarProviderProps) => {
   const notistackRef = useRef<SnackbarProvider>(null);
 
-  const snackBarConfig = useMemo<ToastConfigProps>(() => {
+  const snackBarConfig = useMemo<ToastConfig>(() => {
     const onClickDismiss = (key: ToastKey) => () => {
       notistackRef.current?.closeSnackbar(key);
     };
@@ -80,10 +80,12 @@ export const useToast = () => {
   return toast;
 };
 
-export type withToastProps = { toast: Toast };
+export type WithToastProps = { toast: Toast };
 
 export const withToast =
-  <P extends object>(Component: React.ComponentType<P>) =>
+  <P extends object>(
+    Component: React.ComponentType<Omit<P, keyof WithToastProps>>
+  ) =>
   (props: P) => {
     const toast = useToast();
 
